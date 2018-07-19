@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "preserveConstEnums": true,
+    "strictNullChecks": true,
+    "noEmitHelpers": true,
+    "importHelpers": true,
+    "suppressImplicitAnyIndexErrors": false,
+    "alwaysStrict": true,
+    "sourceMap": true,
+    "outDir": "build",
+    "typeRoots": [
+      "node_modules/@types",
+      "@types"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "server/**/*"
+  ]
+}

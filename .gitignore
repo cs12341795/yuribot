@@ -1,0 +1,11 @@
+.DS_Store
+/node_modules/
+*.log
+/.idea/
+/coverage/
+/build/
+/server/config/*.ts
+!/server/config/index.ts
+!/server/config/common.ts
+/public/build/
+/.vscode/
