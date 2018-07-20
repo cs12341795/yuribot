@@ -12,7 +12,8 @@
     "start": "cross-env NODE_ENV=production node build/index.js",
     "dev": "cross-env NODE_ENV=development ts-node server/index.ts",
     "test": "jest --runInBand",
-    "clean": "rm -rf build public/build"
+    "clean": "rm -rf build public/build",
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,7 @@
   "dependencies": {
     "bunyan": "^1.8.12",
     "cross-env": "^5.2.0",
+    "discord.js": "^11.3.2",
     "koa": "^2.5.2"
   },
   "jest": {
