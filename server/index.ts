@@ -1,20 +1,26 @@
-import Discord = require('discord.js');
+import * as Discord from 'discord.js';
+import config from './config';
+import logger from './logger';
+
 const client = new Discord.Client();
 
-client.on('ready', ()=>console.log('ready'));
-client.on('message', message =>
-{
-  const {author, content} = message;
-  console.log(`${author.username}: ${content}`);
+client.on('ready', () => {
+  logger.info('Discord client is ready');
 });
-client.login(process.env.token);
+
+client.on('message', message => {
+  const { author, content } = message;
+  logger.info(`${author.username}: ${content}`);
+});
+
+client.login(config.discord.token).catch(err => {
+  logger.error(`Discord client fail to login`, err);
+  process.exit(1);
+});
 
 export default client;
 
 /*import * as Koa from 'koa';
-import config from './config';
-import logger from './logger';
-
 const app = new Koa();
 
 app.use(async (ctx) => {

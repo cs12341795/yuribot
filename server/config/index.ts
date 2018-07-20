@@ -9,6 +9,9 @@ export interface IConfig {
     host: string;
     port: number;
   };
+  discord: {
+    token: string;
+  }
 }
 
 const env = process.env.NODE_ENV || 'development'
@@ -20,6 +23,9 @@ const config: IConfig = {
   server: {
     host: process.env.SERVER_HOST || '0.0.0.0',
     port: +(process.env.SERVER_PORT || '4000')
+  },
+  discord: {
+    token: process.env.token || 'DUMMY_TOKEN'
   }
 };
 
