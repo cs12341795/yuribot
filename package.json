@@ -13,6 +13,7 @@
     "dev": "cross-env NODE_ENV=development ts-node server/index.ts",
     "test": "jest --runInBand",
     "clean": "rm -rf build public/build",
+    "migrate:pg": "knex migrate:latest",
     "postinstall": "npm run build"
   },
   "repository": {
@@ -40,10 +41,14 @@
     "typescript": "^2.9.2"
   },
   "dependencies": {
+    "@types/knex": "^0.14.17",
+    "@types/pg": "^7.4.10",
     "bunyan": "^1.8.12",
     "cross-env": "^5.2.0",
     "discord.js": "^11.3.2",
-    "koa": "^2.5.2"
+    "knex": "^0.15.2",
+    "koa": "^2.5.2",
+    "pg": "^7.4.3"
   },
   "jest": {
     "transform": {

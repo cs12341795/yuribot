@@ -1,35 +1,19 @@
 import * as Discord from 'discord.js';
-import config from './config';
-import logger from './logger';
+import config from '../config';
+import logger from '../logger';
+import DiscordDao from '../dao/discord';
 
 const client = new Discord.Client();
 
-client.on('ready', () => {
+client.on('ready', async () => {
   logger.info('Discord client is ready');
-});
-
-client.on('message', message => {
-  const { author, content } = message;
-  logger.info(`${author.username}: ${content}`);
+  // use discord dao
+  // const dao = new DiscordDao(client);
+  // const channel = await dao.getTextChannel('guildId', 'channelId');
+  // const resp = await channel.send('hihi~~ I am yuribot!');
 });
 
 client.login(config.discord.token).catch(err => {
   logger.error(`Discord client fail to login`, err);
   process.exit(1);
 });
-
-export default client;
-
-/*import * as Koa from 'koa';
-const app = new Koa();
-
-app.use(async (ctx) => {
-  ctx.set('Content-Type', 'text/plain');
-  ctx.body = 'Hello Yuribot';
-})
-
-const server = app.listen(config.server.port, config.server.host, () => {
-  logger.info(`Server listening on ${config.server.host}:${config.server.port}`);
-});
-
-export default server;*/
