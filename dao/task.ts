@@ -65,7 +65,7 @@ export class KnexTaskDao implements ITaskDao {
   }
 
   async deleteTask(task: ITask, context?: any) {
-    let results = await this.knex.table('tasks').where('id', task.id).delete('id') as Array<any>;
+    let results = await this.knex.table('tasks').where('id', task.id).delete().returning('*') as Array<any>;
     return this.single(results);
   }
 
