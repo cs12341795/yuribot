@@ -10,8 +10,8 @@ export interface ITask {
   id: number;
   status?: TaskStatus;
   author?: string;
-  content?: string;
-  channel?: string;
+  platform?: string;
+  param?: any;
   response?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -70,13 +70,13 @@ export class KnexTaskDao implements ITaskDao {
   }
 
   private transform(r: any): ITask {
-    const { id, author, status, content, channel, response, created_at: createdAt, updated_at:updatedAt } = r;
-    return { id, author, status, content, channel, response, createdAt, updatedAt };
+    const { id, author, status, platform, param, response, created_at: createdAt, updated_at:updatedAt } = r;
+    return { id, author, status, platform, param, response, createdAt, updatedAt };
   }
 
   private format(t: ITask): any {
-    const { id, author, status, content, channel, response, createdAt:created_at, updatedAt:updated_at } = t;
-    return { id, author, status, content, channel, response, created_at, updated_at };
+    const { id, author, status, platform, param, response, createdAt:created_at, updatedAt:updated_at } = t;
+    return { id, author, status, platform, param, response, created_at, updated_at };
   }
 
   private single(r: Array<any>): ITask {

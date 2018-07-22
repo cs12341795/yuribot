@@ -1,4 +1,5 @@
 import { Client, Guild, TextChannel } from 'discord.js';
+import { ITask } from './task';
 
 export interface IChannel {
   id: string;
@@ -6,16 +7,44 @@ export interface IChannel {
   send(msg: string): Promise<any>;
 }
 
-export interface IDiscordDao {
+export interface IDiscordTask extends ITask {
+  param: {
+    content: string;
+    guild: {
+      id: string;
+      name: string;
+    };
+    channel: {
+      id: string;
+      name: string;
+    };
+  }
+}
+
+export interface ITaskHandler {
+  handleTask(task: ITask): Promise<any>;
+}
+
+export interface IDiscordDao extends ITaskHandler {
   listTextChannels(guildId: string): Promise<Array<IChannel>>;
   getTextChannel(guildId: string, channelId: string): Promise<IChannel>;
 }
 
+export interface IDiscordChannelFactory {
+  (guild: Guild, data: any): IChannel
+}
+
 export default class DiscordDao implements IDiscordDao {
   private client: Client;
+  private channelFactory: IDiscordChannelFactory;
 
-  constructor(client: Client) {
+  constructor(client: Client, channelFactory?: IDiscordChannelFactory) {
     this.client = client;
+    if (channelFactory) {
+      this.channelFactory = channelFactory;
+    } else {
+      this.channelFactory = (guild, data) => new TextChannel(guild, data);
+    }
   }
 
   async getGuild(id: string): Promise<Guild> {
@@ -29,7 +58,7 @@ export default class DiscordDao implements IDiscordDao {
     const guild = await this.getGuild(guildId);
     return guild.channels
       .filter(c => c.type === 'text')
-      .map(c => new TextChannel(guild, c));
+      .map(c => this.channelFactory(guild, c));
   }
 
   async getTextChannel(guildId: string, channelId: string) {
@@ -39,5 +68,13 @@ export default class DiscordDao implements IDiscordDao {
     }
 
     throw new Error(`Channel ${channelId} not found`);
+  }
+
+  async handleTask(task: IDiscordTask) {
+    if (task.platform !== 'discord') {
+      throw new Error(`Task ${task.id} not for discord`);
+    }
+    const channel = await this.getTextChannel(task.param.guild.id, task.param.channel.id);
+    return await channel.send(task.param.content);
   }
 }

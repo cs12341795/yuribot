@@ -4,15 +4,15 @@ import { TaskStatus, KnexTaskDao } from '../task';
 const fixtures = [{
   id: undefined,
   status: TaskStatus.PENDING,
-  content: '1',
+  platform: '1'
 }, {
   id: undefined,
   status: TaskStatus.DONE,
-  content: '2',
+  platform: '2'
 }, {
   id: undefined,
   status: TaskStatus.ERROR,
-  content: '3',
+  platform: '3'
 }];
 
 const dao = new KnexTaskDao(knex);
@@ -46,10 +46,11 @@ describe('KnexTaskDao', () => {
   });
 
   test('createTask', async () => {
-    let task = await dao.createTask({ id: 0, content: '4' });
+    let task = await dao.createTask({ id: 0, platform: '4', param: { some: '4' } });
     expect(task.id).not.toBe(0);
     expect(task.status).toBe(TaskStatus.PENDING);
-    expect(task.content).toBe('4');
+    expect(task.platform).toBe('4');
+    expect(task.param).toMatchObject({ some: '4' });
   });
 
   test('updateTask', async () => {

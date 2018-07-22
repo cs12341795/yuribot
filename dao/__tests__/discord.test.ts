@@ -1,6 +1,7 @@
 import { Client, Collection } from 'discord.js';
-import DiscordDao from '../discord';
+import DiscordDao, { IDiscordTask, IChannel } from '../discord';;
 
+const mockChannel = jest.fn<IChannel>(impl => impl);
 const mockClient = jest.fn<Client>(() => {
   return {
     guilds: new Collection([
@@ -8,13 +9,17 @@ const mockClient = jest.fn<Client>(() => {
         channels: new Collection([
           ['1', { id: '1', name: '1', type: 'text' }],
           ['2', { id: '2', name: '2', type: 'text' }],
-          ['3', { id: '3', name: '3', type: 'other' }],
+          ['3', { id: '3', name: '3', type: 'none' }]
         ])
       }],
     ])
   }
 });
-const dao = new DiscordDao(new mockClient());
+const dao = new DiscordDao(new mockClient(), (guild, data) => {
+  return new mockChannel(Object.assign({
+    send: async (msg) => msg
+  }, data));
+});
 
 describe('DiscordDao', () => {
   test('listTextChannels', async () => {
@@ -29,5 +34,19 @@ describe('DiscordDao', () => {
     expect(channel.name).toBe('1');
     expect(dao.getTextChannel('2', '3')).rejects.toThrow('Guild 2 not found');
     expect(dao.getTextChannel('1', '3')).rejects.toThrow('Channel 3 not found');
+  });
+
+  test('handleTask', async () => {
+    let task: IDiscordTask = {
+      id: 1,
+      platform: 'discord',
+      param: {
+        content: 'hahaha',
+        guild: { id: '1', name: '1' },
+        channel: { id: '1', name: '1' }
+      }
+    }
+    let resp = await dao.handleTask(task);
+    expect(resp).toBe('hahaha');
   });
 });

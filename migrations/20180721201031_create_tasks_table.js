@@ -4,8 +4,8 @@ exports.up = async function(knex, Promise) {
     table.increments('id');
     table.integer('status').defaultTo(0);
     table.string('author');
-    table.string('content');
-    table.string('channel');
+    table.string('platform');
+    table.jsonb('param');
     table.string('response');
     table.timestamps(false, true);
 
