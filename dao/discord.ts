@@ -1,12 +1,14 @@
 import { Client, Guild, TextChannel } from 'discord.js';
-import { ITask } from './task';
+import { ITaskHandler, ITask, IChannel } from './types';
 
-export interface IChannel {
-  id: string;
-  name: string;
-  send(msg: string): Promise<any>;
+export interface IDiscordDao {
+  listTextChannels(guildId: string): Promise<Array<IChannel>>;
+  getTextChannel(guildId: string, channelId: string): Promise<IChannel>;
 }
 
+export interface IDiscordChannelFactory {
+  (guild: Guild, data: any): IChannel
+}
 export interface IDiscordTask extends ITask {
   param: {
     content: string;
@@ -21,20 +23,7 @@ export interface IDiscordTask extends ITask {
   }
 }
 
-export interface ITaskHandler {
-  handleTask(task: ITask): Promise<any>;
-}
-
-export interface IDiscordDao extends ITaskHandler {
-  listTextChannels(guildId: string): Promise<Array<IChannel>>;
-  getTextChannel(guildId: string, channelId: string): Promise<IChannel>;
-}
-
-export interface IDiscordChannelFactory {
-  (guild: Guild, data: any): IChannel
-}
-
-export default class DiscordDao implements IDiscordDao {
+export default class DiscordDao implements IDiscordDao, ITaskHandler {
   private client: Client;
   private channelFactory: IDiscordChannelFactory;
 

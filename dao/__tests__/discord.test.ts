@@ -1,5 +1,6 @@
 import { Client, Collection } from 'discord.js';
-import DiscordDao, { IDiscordTask, IChannel } from '../discord';;
+import DiscordDao from '../discord';
+import { IChannel } from '../types';
 
 const mockChannel = jest.fn<IChannel>(impl => impl);
 const mockClient = jest.fn<Client>(() => {
@@ -37,7 +38,7 @@ describe('DiscordDao', () => {
   });
 
   test('handleTask', async () => {
-    let task: IDiscordTask = {
+    let task = {
       id: 1,
       platform: 'discord',
       param: {

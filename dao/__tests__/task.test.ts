@@ -1,5 +1,6 @@
 import knex from '../knex';
-import { TaskStatus, KnexTaskDao } from '../task';
+import { KnexTaskDao } from '../task';
+import { TaskStatus } from '../types';
 
 const fixtures = [{
   id: undefined,
