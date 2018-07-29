@@ -4,17 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:tsc",
+    "build": "npm run build:tsc && cp -R ./server/views ./build/server/views",
     "build:tsc": "tsc",
     "watch": "npm run build:tsc -- -w",
     "lint": "npm run lint:tslint",
     "lint:tslint": "tslint --project . {server}/**/*.ts",
-    "start": "cross-env NODE_ENV=production node build/index.js",
+    "start": "cross-env NODE_ENV=production node build/server/index.js",
     "dev": "cross-env NODE_ENV=development ts-node server/index.ts",
     "test": "jest --runInBand",
     "clean": "rm -rf build public/build",
     "migrate:pg": "knex migrate:latest",
-    "postinstall": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "boot": "npm run migrate:pg && npm run start"
   },
   "repository": {
     "type": "git",
@@ -27,28 +28,42 @@
   },
   "homepage": "https://github.com/cs12341795/yuribot#readme",
   "devDependencies": {
-    "@types/bunyan": "^1.8.4",
     "@types/jest": "^22.2.3",
-    "@types/koa": "^2.0.46",
-    "@types/node": "^10.5.2",
     "@types/supertest": "^2.0.5",
     "jest": "^22.4.4",
     "supertest": "^3.1.0",
     "ts-jest": "22.4.4",
-    "ts-node": "^7.0.0",
     "tslint": "^5.11.0",
-    "tslint-eslint-rules": "^5.3.1",
-    "typescript": "^2.9.2"
+    "tslint-eslint-rules": "^5.3.1"
   },
   "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/bunyan": "^1.8.4",
+    "@types/ejs": "^2.6.0",
     "@types/knex": "^0.14.17",
+    "@types/koa": "^2.0.46",
+    "@types/koa-bodyparser": "^5.0.1",
+    "@types/koa-router": "^7.0.31",
+    "@types/koa-session": "^5.7.4",
+    "@types/node": "^10.5.4",
     "@types/pg": "^7.4.10",
+    "@types/simple-oauth2": "^1.1.2",
+    "axios": "^0.18.0",
     "bunyan": "^1.8.12",
     "cross-env": "^5.2.0",
     "discord.js": "^11.3.2",
+    "ejs": "^2.6.1",
+    "install": "^0.12.1",
     "knex": "^0.15.2",
     "koa": "^2.5.2",
-    "pg": "^7.4.3"
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.8.2",
+    "pg": "^7.4.3",
+    "simple-oauth2": "^2.2.0",
+    "ts-node": "^7.0.0",
+    "tslib": "^1.9.3",
+    "typescript": "^2.9.2"
   },
   "jest": {
     "transform": {

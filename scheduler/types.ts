@@ -4,8 +4,5 @@ export interface IScheduler {
   stop(): void
   setInterval(interval: number): void
   getSchedule(): Date
-}
-
-export interface IWorker {
   work(): Promise<any>
 }

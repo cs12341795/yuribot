@@ -2,6 +2,7 @@ import { Client, Guild, TextChannel } from 'discord.js';
 import { ITaskHandler, ITask, IChannel } from './types';
 
 export interface IDiscordDao {
+  getGuild(guildId: string): Promise<Guild>;
   listTextChannels(guildId: string): Promise<Array<IChannel>>;
   getTextChannel(guildId: string, channelId: string): Promise<IChannel>;
 }

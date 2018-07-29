@@ -10,7 +10,22 @@ export interface IConfig {
     port: number;
   };
   discord: {
-    token: string;
+    bot: {
+      token: string;
+    };
+    client: {
+      id: string;
+      secret: string;
+    };
+    auth: {
+      guildId: string;
+      tokenHost: string;
+      tokenPath: string;
+      authorizePath: string;
+      revokePath: string;
+      redirectUrl: string;
+      scope: string;
+    };
   };
   knex: {
     client: string;
@@ -19,7 +34,7 @@ export interface IConfig {
 }
 
 const env = process.env.NODE_ENV || 'development';
-const config: IConfig = {
+let config: IConfig = {
   env,
   logger: {
     level:
@@ -31,13 +46,35 @@ const config: IConfig = {
     port: +(process.env.SERVER_PORT || '4000')
   },
   discord: {
-    token:
-      process.env.token || 'DISCORD_BOT_TOKEN'
+    bot: {
+      token: process.env.DISCORD_BOT_TOKEN || ''
+    },
+    client: {
+      id: process.env.DISCORD_CLIENT_ID || '',
+      secret: process.env.DISCORD_CLIENT_SECRET || '',
+    },
+    auth: {
+      guildId: process.env.DISCORD_GUILD_ID || '',
+      tokenHost: 'https://discordapp.com',
+      tokenPath: '/api/oauth2/token',
+      authorizePath: '/api/oauth2/authorize',
+      revokePath: '/api/oauth2/token/revoke',
+      scope: 'identify guilds',
+      redirectUrl: process.env.DISCORD_OAUTH_REDIRECT || 'http://localhost:4000/discord/callback',
+    }
   },
   knex: {
     client: 'postgresql',
     connection: process.env.DATABASE_URL || 'postgresql://postgres@localhost:5432/postgres'
   }
 };
+
+try {
+  // tslint:disable-next-line:no-var-requires non-literal-require
+  config = require('./' + config.env).default;
+} catch (err) {
+  // tslint:disable-next-line:no-console
+  console.log('Failed to load config:', config.env, err);
+}
 
 export default config;

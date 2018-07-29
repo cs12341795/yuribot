@@ -1,7 +1,7 @@
 import * as Knex from 'knex';
 import { ITask, ITaskDao, TaskStatus } from './types';
 
-export class KnexTaskDao implements ITaskDao {
+export default class KnexTaskDao implements ITaskDao {
   private knex: Knex;
 
   constructor(knex: Knex) {
@@ -21,7 +21,7 @@ export class KnexTaskDao implements ITaskDao {
       .from('tasks')
       .where('status', '<', TaskStatus.DONE)
       .orderBy('status')
-      .orderBy('created_at', 'desc') as Array<any>;
+      .orderBy('created_at') as Array<any>;
 
     return results.map(this.transform);
   }

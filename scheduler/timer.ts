@@ -1,8 +1,8 @@
-import { IScheduler, IWorker } from './types';
+import { IScheduler } from './types';
 import { ITaskHandler, ITaskDao, TaskStatus } from '../dao/types';
 import logger from '../logger';
 
-export default class TimerScheduler implements IScheduler, IWorker {
+export default class TimerScheduler implements IScheduler {
   private taskDao: ITaskDao;
   private taskHandler: ITaskHandler;
   private scheduled: Date;
@@ -45,9 +45,8 @@ export default class TimerScheduler implements IScheduler, IWorker {
       let tasks = await this.taskDao.getUndoTasks();
       for (let task of tasks) {
         try {
-          let resp = await this.taskHandler.handleTask(task);
+          await this.taskHandler.handleTask(task);
           task.status = TaskStatus.DONE;
-          task.response = resp;
         } catch (err) {
           task.status = TaskStatus.ERROR;
           task.response = err.message;

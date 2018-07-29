@@ -1,5 +1,5 @@
 import knex from '../knex';
-import { KnexTaskDao } from '../task';
+import KnexTaskDao from '../task';
 import { TaskStatus } from '../types';
 
 const fixtures = [{
@@ -42,7 +42,7 @@ describe('KnexTaskDao', () => {
     let results = await dao.getUndoTasks();
     expect(results.length).toBe(2);
     if (results.length === 2) {
-      expect(results[0].createdAt >= results[1].createdAt)
+      expect(results[0].createdAt <= results[1].createdAt)
     }
   });
 

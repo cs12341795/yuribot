@@ -7,6 +7,8 @@ const mockClient = jest.fn<Client>(() => {
   return {
     guilds: new Collection([
       ['1', {
+        id: '1',
+        name: '1',
         channels: new Collection([
           ['1', { id: '1', name: '1', type: 'text' }],
           ['2', { id: '2', name: '2', type: 'text' }],
@@ -23,6 +25,12 @@ const dao = new DiscordDao(new mockClient(), (guild, data) => {
 });
 
 describe('DiscordDao', () => {
+  test('getGuild', async () => {
+    let guild = await dao.getGuild('1');
+    expect(guild.id).toBe('1');
+    expect(guild.name).toBe('1');
+  });
+
   test('listTextChannels', async () => {
     let channels = await dao.listTextChannels('1');
     expect(channels.length).toBe(2);

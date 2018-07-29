@@ -53,7 +53,7 @@ describe('TimerScheduler', () => {
     let schedule = scheduler.getSchedule();
     let t1 = schedule.getTime();
     let t2 = now.getTime();
-    expect(t1 - t2).toBe(3600);
+    expect(t1 - t2).toBeGreaterThanOrEqual(3600);
   });
 
   test('start to work', (done) => {
@@ -71,7 +71,7 @@ describe('TimerScheduler', () => {
   test('work', async () => {
     await scheduler.work();
     expect(taskStore).toMatchObject([
-      { id: 0, status: TaskStatus.DONE, response: true },
+      { id: 0, status: TaskStatus.DONE },
       { id: 1, status: TaskStatus.ERROR, response: 'handle failed' },
       { id: 2 },
     ]);
