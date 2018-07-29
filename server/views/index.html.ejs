@@ -42,7 +42,7 @@
   <div class="container">
     <div class="jumbotron">
       <h1 class="display-4">
-        <img src="<%= session.avatar || 'http://via.placeholder.com/70x70' %>" class="rounded-circle" style="width: 70px; height: 70px;">
+        <img src="<%= session.avatar ? `https://cdn.discordapp.com/avatars/${session.userId}/${session.avatar}` : `https://cdn.discordapp.com/embed/avatars/${session.discriminator % 5}.png` %>" class="rounded-circle" style="width: 70px; height: 70px;">
         <%= session.username %>
         <a class="btn btn-warning" data-remote="delete" href="/logout">登出</a>
       </h1>

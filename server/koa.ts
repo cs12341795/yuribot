@@ -89,6 +89,7 @@ export default class YuriKoa {
               ctx.session.userId = user.data.id;
               ctx.session.username = user.data.username;
               ctx.session.avatar = user.data.avatar;
+              ctx.session.discriminator = user.data.discriminator;
               ctx.redirect('/');
               return;
             }
