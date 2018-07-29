@@ -25,6 +25,7 @@ export interface IConfig {
       revokePath: string;
       redirectUrl: string;
       scope: string;
+      roles: string;
     };
   };
   knex: {
@@ -61,6 +62,7 @@ let config: IConfig = {
       revokePath: '/api/oauth2/token/revoke',
       scope: 'identify guilds',
       redirectUrl: process.env.DISCORD_OAUTH_REDIRECT || 'http://localhost:4000/discord/callback',
+      roles: process.env.DISCORD_ROLES || ''
     }
   },
   knex: {

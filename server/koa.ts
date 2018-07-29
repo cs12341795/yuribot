@@ -65,6 +65,7 @@ export default class YuriKoa {
         ctx.throw(400, 'Bad Oauth state');
       }
 
+      let token: Oauth2.Token | undefined;
       try {
         // get access token from discord
         const result = await this.oauth2.authorizationCode.getToken({
@@ -72,29 +73,36 @@ export default class YuriKoa {
           redirect_uri: config.discord.auth.redirectUrl,
           scope: config.discord.auth.scope
         });
-        const token = this.oauth2.accessToken.create(result);
+        token = this.oauth2.accessToken.create(result);
         // get user data with access token
         const client = axios.create();
         client.defaults.headers.common['Authorization'] = `${token.token.token_type} ${token.token.access_token}`;
         let user = await client.get('https://discordapp.com/api/users/@me');
-        let guilds = await client.get('https://discordapp.com/api/users/@me/guilds');
-        // No need access anymore
-        await token.revoke('access_token');
-        await token.revoke('refresh_token');
-        // make sure user is in the guild
-        for (let guild of guilds.data) {
-          if (guild.id === config.discord.auth.guildId && ctx.session) {
-            ctx.session.userId = user.data.id;
-            ctx.session.username = user.data.username;
-            ctx.session.avatar = user.data.avatar;
-            ctx.redirect('/');
-            return;
+        // make sure user is in the guild and get roles at the same time
+        client.defaults.headers.common['Authorization'] = 'Bot ' + config.discord.bot.token;
+        let member = await client.get(`https://discordapp.com/api/guilds/${config.discord.auth.guildId}/members/${user.data.id}`);
+        let roles = await client.get(`https://discordapp.com/api/guilds/${config.discord.auth.guildId}/roles`);
+        // make sure user has required roles
+        for (let roleId of member.data.roles) {
+          for (let role of roles.data) {
+            if (ctx.session && role.id === roleId && config.discord.auth.roles.indexOf(role.name) !== -1) {
+              ctx.session.userId = user.data.id;
+              ctx.session.username = user.data.username;
+              ctx.session.avatar = user.data.avatar;
+              ctx.redirect('/');
+              return;
+            }
           }
         }
-
         ctx.throw(401, 'You are not in the guild');
       } catch (err) {
         ctx.throw(401, 'Authentication failed');
+      } finally {
+        // No need access anymore
+        if (token) {
+          await token.revoke('access_token');
+          await token.revoke('refresh_token');
+        }
       }
     });
 
