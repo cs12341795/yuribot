@@ -44,7 +44,7 @@ let config: IConfig = {
   },
   server: {
     host: process.env.SERVER_HOST || '0.0.0.0',
-    port: +(process.env.SERVER_PORT || '4000')
+    port: +(process.env.SERVER_PORT || process.env.PORT || '4000')
   },
   discord: {
     bot: {
@@ -74,9 +74,10 @@ let config: IConfig = {
 try {
   // tslint:disable-next-line:no-var-requires non-literal-require
   config = require('./' + config.env).default;
+  console.log('load custom config:', config.env);
 } catch (err) {
   // tslint:disable-next-line:no-console
-  console.log('Failed to load config:', config.env, err);
+  // do nothing
 }
 
 export default config;
