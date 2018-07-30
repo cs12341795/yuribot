@@ -21,6 +21,12 @@
   renderTaskChannel = function (task) {
     return task.param && task.param.channel ? task.param.channel.name : '';
   }
+  avatarUrl = function (member) {
+    if (!member) return 'http://via.placeholder.com/70x70';
+    return member.avatar ?
+      `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}` :
+      `https://cdn.discordapp.com/embed/avatars/${member.discriminator % 5}.png`;
+  }
 %>
 
 <!doctype html>
@@ -42,7 +48,7 @@
   <div class="container">
     <div class="jumbotron">
       <h1 class="display-4">
-        <img src="<%= session.avatar ? `https://cdn.discordapp.com/avatars/${session.userId}/${session.avatar}` : `https://cdn.discordapp.com/embed/avatars/${session.discriminator % 5}.png` %>" class="rounded-circle" style="width: 70px; height: 70px;">
+        <img src="<%= avatarUrl(session) %>" class="rounded-circle" style="width: 70px; height: 70px;">
         <%= session.username %>
         <a class="btn btn-warning" data-remote="delete" href="/logout">登出</a>
       </h1>
@@ -69,13 +75,13 @@
       <div class="card w-100 mb-2">
         <div class="card-body">
           <h5 class="card-title">
-            <%- renderTaskStatus(t) %>
+            <img src="<%= avatarUrl(members.has(t.author) ? members.get(t.author).user : {}) %>" class="rounded-circle" style="width: 45px; height: 45px;">
+            <%= members.has(t.author) ? members.get(t.author).user.username : '' %>
             <a class="btn btn-sm btn-danger float-right" data-remote="delete" href="/tasks/<%= t.id %>">刪除</a>
           </h5>
-          <h6 class="card-subtitle mb-2 text-muted"><%= t.author %></h6>
           <p class="card-text"><%= renderTaskContent(t) %></p>
+          <%- renderTaskStatus(t) %>
           <span class="badge badge-primary">更新於 <%= t.updatedAt.toLocaleString() %></span>
-          <span class="badge badge-secondary"><%= renderTaskGuild(t) %></span>
           <span class="badge badge-secondary"><%= renderTaskChannel(t) %></span>
         </div>
       </div>

@@ -86,7 +86,7 @@ export default class YuriKoa {
         for (let roleId of member.data.roles) {
           for (let role of roles.data) {
             if (ctx.session && role.id === roleId && config.discord.auth.roles.indexOf(role.name) !== -1) {
-              ctx.session.userId = user.data.id;
+              ctx.session.id = user.data.id;
               ctx.session.username = user.data.username;
               ctx.session.avatar = user.data.avatar;
               ctx.session.discriminator = user.data.discriminator;
@@ -111,8 +111,10 @@ export default class YuriKoa {
       let tasks = await this.opt.taskDao.getAllTasks();
       let scheduled = this.opt.scheduler.getSchedule();
       let channels = await this.opt.discordDao.listTextChannels(config.discord.auth.guildId);
+      let guild = await this.opt.discordDao.getGuild(config.discord.auth.guildId);
+      let members = guild.members;
 
-      await this.render(ctx, 'index', { tasks, scheduled, channels, session: ctx.session });
+      await this.render(ctx, 'index', { tasks, scheduled, channels, members, session: ctx.session });
     });
 
     router.post('/tasks', this.checkLogin, async (ctx: Koa.Context) => {
@@ -125,7 +127,7 @@ export default class YuriKoa {
       let channel = await this.opt.discordDao.getTextChannel(config.discord.auth.guildId, channel_id);
       await this.opt.taskDao.createTask({
         id: 0,
-        author: ctx.session ? ctx.session.username : '',
+        author: ctx.session ? ctx.session.id : '',
         platform: 'discord',
         param: {
           content: content,
@@ -157,7 +159,7 @@ export default class YuriKoa {
     });
     router.delete('/logout', async (ctx: Koa.Context) => {
       if (ctx.session) {
-        ctx.session.userId = null;
+        ctx.session.id = null;
         ctx.session.username = null;
       }
       ctx.body = 'bye';
@@ -175,7 +177,7 @@ export default class YuriKoa {
       return;
     }
 
-    if (ctx.session.userId) {
+    if (ctx.session.id) {
       await next(ctx, async () => null);
       return;
     }
