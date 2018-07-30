@@ -54,22 +54,28 @@
       </h1>
       <hr class="my-4">
       <form class="form" method="POST" action="/tasks">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <select class="custom-select" name="channel_id" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" required>
-              <option value="">選則頻道</option>
-              <% for(let c of channels) { %>
-                <option value="<%= c.id %>"><%= c.name %></option>
-              <% } %>
-            </select>
+        <div class="row">
+          <div class="col-md-3 pr-md-0">
+            <div class="form-group mb-2">
+              <select class="custom-select" name="channel_id" required>
+                <option value="">選擇頻道</option>
+                <% for(let c of channels) { %>
+                  <option value="<%= c.id %>"><%= c.name %></option>
+                <% } %>
+              </select>
+            </div>
           </div>
-          <input type="text" name="content" class="form-control" placeholder="想說啥？" required>
-          <div class="input-group-append">
-            <button type="submit" class="btn btn-primary mb-2 btn-outline">加入訊息</button>
+          <div class="col-md-8 pr-md-0">
+            <div class="form-group mb-2">
+              <input type="text" name="content" class="form-control" placeholder="想說啥？" required>
+            </div>
+          </div>
+          <div class="col-md-1 pr-md-0">
+            <button type="submit" class="btn btn-primary mb-2">加入</button>
           </div>
         </div>
       </form>
-      <a href="#/" data-toggle="modal" data-target="#schduleForm">下次發布時間 <%= scheduled.toLocaleString() %></a>
+      <a href="#/" data-toggle="modal" data-target="#schduleForm">台灣現在時間 <%= new Date().toLocaleString() %> <br>下次發布時間 <%= scheduled.toLocaleString() %></a>
     </div>
     <% for(let t of tasks) { %>
       <div class="card w-100 mb-2">

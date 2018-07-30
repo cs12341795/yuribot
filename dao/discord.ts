@@ -48,7 +48,7 @@ export default class DiscordDao implements IDiscordDao, ITaskHandler {
     const guild = await this.getGuild(guildId);
     return guild.channels
       .filter(c => c.type === 'text')
-      .map(c => this.channelFactory(guild, c));
+      .map(c => this.channelFactory(guild, c)).sort((a, b) => a.position - b.position);
   }
 
   async getTextChannel(guildId: string, channelId: string) {

@@ -31,5 +31,6 @@ export interface ITaskDao {
 export interface IChannel {
   id: string;
   name: string;
+  position: number;
   send(msg: string): Promise<any>;
 }
