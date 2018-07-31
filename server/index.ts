@@ -14,6 +14,29 @@ const taskDao = new KnexTaskDao(knex);
 const scheduler = new TimerScheduler(taskDao, discordDao);
 scheduler.start();
 
+/**********/
+//TODO ping server to make it alive
+const request = require('request');
+const makeItAlive = (url:string) =>
+{
+  request.get
+  (
+    url,
+    { json: { key: 'value' } },
+    (err:any, response:any, body:any) =>
+    {
+      console.log(`send a post to ${url}`);
+      if(!err && response.statusCode == 200)
+        console.log(`OK`);
+      else
+        console.log(`return code: ${response.statusCode}`);
+    }
+  );
+};
+//10min
+setInterval(makeItAlive, 600000, 'https://yuri-2018-04-21.herokuapp.com');
+/**********/
+
 client.on('ready', async () => {
   logger.info('Discord client is ready');
 });
