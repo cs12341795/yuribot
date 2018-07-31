@@ -60,6 +60,7 @@
     "koa-router": "^7.4.0",
     "koa-session": "^5.8.2",
     "pg": "^7.4.3",
+    "request": "^2.87.0",
     "simple-oauth2": "^2.2.0",
     "ts-node": "^7.0.0",
     "tslib": "^1.9.3",
