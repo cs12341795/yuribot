@@ -1,5 +1,6 @@
 import * as Knex from 'knex';
 import * as Discord from 'discord.js';
+import axios from 'axios';
 import config from '../config';
 import logger from '../logger';
 import DiscordDao from '../dao/discord';
@@ -14,28 +15,22 @@ const taskDao = new KnexTaskDao(knex);
 const scheduler = new TimerScheduler(taskDao, discordDao);
 scheduler.start();
 
-/**********/
-//TODO ping server to make it alive
-const request = require('request');
-const makeItAlive = (url:string) =>
-{
-  request.get
-  (
-    url,
-    { json: { key: 'value' } },
-    (err:any, response:any, body:any) =>
-    {
-      console.log(`send a post to ${url}`);
-      if(!err && response.statusCode == 200)
-        console.log(`OK`);
-      else
-        console.log(`return code: ${response.statusCode}`);
+const makeItAlive = async (url: string) => {
+  try {
+    await axios.get(url);
+    logger.info('makeItAlive success');
+  } catch (err) {
+    if (err.response) {
+      logger.error('makeItAlive error', err.response.status, err.response.data);
+    } else {
+      logger.error('makeItAlive error', err);
     }
-  );
+  }
 };
 //10min
-setInterval(makeItAlive, 600000, 'https://yuri-2018-04-21.herokuapp.com');
-/**********/
+if (config.server.pingPath) {
+  setInterval(makeItAlive, 10 * 60 * 1000, config.server.pingPath);
+}
 
 client.on('ready', async () => {
   logger.info('Discord client is ready');

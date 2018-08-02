@@ -8,6 +8,7 @@ export interface IConfig {
   server: {
     host: string;
     port: number;
+    pingPath: string;
   };
   discord: {
     bot: {
@@ -44,7 +45,8 @@ let config: IConfig = {
   },
   server: {
     host: process.env.SERVER_HOST || '0.0.0.0',
-    port: +(process.env.SERVER_PORT || process.env.PORT || '4000')
+    port: +(process.env.SERVER_PORT || process.env.PORT || '4000'),
+    pingPath: process.env.SERVER_PING_PATH || 'http://localhost:4000/healthz'
   },
   discord: {
     bot: {
