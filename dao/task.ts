@@ -46,13 +46,13 @@ export default class KnexTaskDao implements ITaskDao {
   }
 
   private transform(r: any): ITask {
-    const { id, author, status, platform, param, response, created_at: createdAt, updated_at:updatedAt } = r;
-    return { id, author, status, platform, param, response, createdAt, updatedAt };
+    const { id, author, status, platform, param, response, created_at: createdAt, updated_at:updatedAt, message_id:messageId } = r;
+    return { id, author, status, platform, param, response, createdAt, updatedAt, messageId };
   }
 
   private format(t: ITask): any {
-    const { id, author, status, platform, param, response, createdAt:created_at, updatedAt:updated_at } = t;
-    return { id, author, status, platform, param, response, created_at, updated_at };
+    const { id, author, status, platform, param, response, createdAt:created_at, updatedAt:updated_at, messageId:message_id } = t;
+    return { id, author, status, platform, param, response, created_at, updated_at, message_id };
   }
 
   private single(r: Array<any>): ITask {

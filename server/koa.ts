@@ -170,7 +170,9 @@ export default class YuriKoa {
       ctx.redirect('/');
     });
     router.delete('/tasks/:id', this.checkLogin, async (ctx: Koa.Context) => {
-      await this.opt.taskDao.deleteTask({ id: ctx.params.id });
+      const task = await this.opt.taskDao.deleteTask({ id: ctx.params.id });
+      if(task.messageId)
+        await this.opt.discordDao.deleteMessage(task.param.channel.id, task.messageId);
       ctx.body = 'ok';
     });
     router.post('/schedule', this.checkLogin, async (ctx: Koa.Context) => {

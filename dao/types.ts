@@ -14,6 +14,7 @@ export interface ITask {
   response?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  messageId?: string;
 }
 
 export interface ITaskHandler {
@@ -33,4 +34,8 @@ export interface IChannel {
   name: string;
   position: number;
   send(msg: string): Promise<any>;
+}
+
+export interface IMessage {
+  id: string;
 }

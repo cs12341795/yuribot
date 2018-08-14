@@ -1,10 +1,11 @@
 import { Client, Guild, TextChannel } from 'discord.js';
-import { ITaskHandler, ITask, IChannel } from './types';
+import { ITaskHandler, ITask, IChannel, IMessage } from './types';
 
 export interface IDiscordDao {
   getGuild(guildId: string): Promise<Guild>;
   listTextChannels(guildId: string): Promise<Array<IChannel>>;
   getTextChannel(guildId: string, channelId: string): Promise<IChannel>;
+  deleteMessage(channelId:string, messageId: string): Promise<IMessage>;
 }
 
 export interface IDiscordChannelFactory {
@@ -58,6 +59,15 @@ export default class DiscordDao implements IDiscordDao, ITaskHandler {
     }
 
     throw new Error(`Channel ${channelId} not found`);
+  }
+
+  async deleteMessage(channelId: string, messageId: string) {
+    const channel = this.client.channels.get(channelId);
+    if(!(channel instanceof TextChannel))
+      throw new Error(`TextChannel ${channelId} not found`);
+    const message = await (<TextChannel>channel).fetchMessage(messageId);
+    if(!message) throw new Error(`Message ${messageId} in Channel ${channelId} not found`);
+    return await message.delete();
   }
 
   async handleTask(task: IDiscordTask) {
