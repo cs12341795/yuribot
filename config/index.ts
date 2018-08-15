@@ -9,6 +9,7 @@ export interface IConfig {
     host: string;
     port: number;
     pingPath: string;
+    maxInterval: number;
   };
   discord: {
     bot: {
@@ -46,7 +47,8 @@ let config: IConfig = {
   server: {
     host: process.env.SERVER_HOST || '0.0.0.0',
     port: +(process.env.SERVER_PORT || process.env.PORT || '4000'),
-    pingPath: process.env.SERVER_PING_PATH || 'http://localhost:4000/healthz'
+    pingPath: process.env.SERVER_PING_PATH || 'http://localhost:4000/healthz',
+    maxInterval: Number(process.env.SERVER_MAX_INTERVAL) || 210379680,
   },
   discord: {
     bot: {

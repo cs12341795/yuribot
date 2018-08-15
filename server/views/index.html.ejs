@@ -1,4 +1,3 @@
-
 <%
   renderTaskStatus = function (task) {
     switch (task.status) {
@@ -109,7 +108,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">每</span>
             </div>
-            <input type="number" name="intervel" class="form-control" value="60">
+            <input type="number" name="interval" class="form-control" value="60" min="1" max="<%= config.maxInterval %>" step="1">
             <div class="input-group-append">
               <span class="input-group-text">分鐘</span>
             </div>
