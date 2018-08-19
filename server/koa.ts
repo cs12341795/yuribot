@@ -126,7 +126,7 @@ export default class YuriKoa {
         channels = channels.filter(c => c.name === '發佈機debug專用');
       }
 
-      await this.render(ctx, 'index', { tasks, scheduled, channels, members, session: ctx.session });
+      await this.render(ctx, 'index', { tasks, scheduled, channels, members, session: ctx.session, config: {maxInterval: config.server.maxInterval} });
     });
 
     router.post('/tasks', this.checkLogin, async (ctx: Koa.Context) => {
@@ -169,26 +169,33 @@ export default class YuriKoa {
       });
       ctx.redirect('/');
     });
+
     router.delete('/tasks/:id', this.checkLogin, async (ctx: Koa.Context) => {
+      const task = await this.opt.taskDao.getTask({ id: ctx.params.id });
+      if (task.messageId) {
+        await this.opt.discordDao.deleteMessage(task.param.guild.id, task.param.channel.id, task.messageId);
+      }
       await this.opt.taskDao.deleteTask({ id: ctx.params.id });
       ctx.body = 'ok';
     });
+
     router.post('/schedule', this.checkLogin, async (ctx: Koa.Context) => {
       if (!ctx.request.body) {
         ctx.throw(400);
         return;
       }
-      let { intervel } = ctx.request.body as any;
-      intervel = +intervel;
-      if (!intervel) {
+      let { interval } = ctx.request.body as any;
+      interval = +interval;
+      if (interval <= 0 || interval > config.server.maxInterval) {
         ctx.throw(400);
         return;
       }
-      this.opt.scheduler.setInterval(intervel * 60 * 1000);
+      this.opt.scheduler.setInterval(interval * 60 * 1000);
       this.opt.scheduler.start();
       await this.opt.scheduler.work();
       ctx.redirect('/');
     });
+
     router.delete('/logout', async (ctx: Koa.Context) => {
       if (ctx.session) {
         ctx.session.id = null;

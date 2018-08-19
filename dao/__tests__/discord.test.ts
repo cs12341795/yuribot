@@ -1,8 +1,9 @@
 import { Client, Collection } from 'discord.js';
 import DiscordDao from '../discord';
-import { IChannel } from '../types';
+import { IChannel, IMessage } from '../types';
 
 const mockChannel = jest.fn<IChannel>(impl => impl);
+const mockMessage = jest.fn<IMessage>(impl => impl);
 const mockClient = jest.fn<Client>(() => {
   return {
     guilds: new Collection([
@@ -22,6 +23,10 @@ const dao = new DiscordDao(new mockClient(), (guild, data) => {
   return new mockChannel(Object.assign({
     send: async (msg) => msg
   }, data));
+}, async (channel, messageId) => {
+  return new mockMessage(Object.assign({
+    delete: async () => true
+  }));
 });
 
 describe('DiscordDao', () => {
@@ -57,5 +62,10 @@ describe('DiscordDao', () => {
     }
     let resp = await dao.handleTask(task);
     expect(resp).toBe('hahaha');
+  });
+
+  test('deleteMessage', async () => {
+    let resp = await dao.deleteMessage('1', '1', '1');
+    expect(resp).toBe(true);
   });
 });

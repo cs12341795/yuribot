@@ -45,7 +45,8 @@ export default class TimerScheduler implements IScheduler {
       let tasks = await this.taskDao.getUndoTasks();
       for (let task of tasks) {
         try {
-          await this.taskHandler.handleTask(task);
+          const message = await this.taskHandler.handleTask(task);
+          task.messageId = message.id;
           task.status = TaskStatus.DONE;
         } catch (err) {
           task.status = TaskStatus.ERROR;

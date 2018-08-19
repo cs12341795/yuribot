@@ -46,6 +46,12 @@ describe('KnexTaskDao', () => {
     }
   });
 
+  test('getTask', async () => {
+    let result = await dao.getTask({ id: fixtures[0].id });
+    expect(result.id).toBe(fixtures[0].id);
+    expect(result.status).toBe(fixtures[0].status);
+  });
+
   test('createTask', async () => {
     let task = await dao.createTask({ id: 0, platform: '4', param: { some: '4' } });
     expect(task.id).not.toBe(0);

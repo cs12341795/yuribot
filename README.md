@@ -24,7 +24,7 @@
 | DISCORD_CLIENT_ID  | 需先註冊DiscordApp取得，用於驗證身分  |
 | DISCORD_CLIENT_SECRET  | 需先註冊DiscordApp取得，用於驗證身分  |
 | DISCORD_OAUTH_REDIRECT | 需先在DiscordApp設定位置才能使用  |
-| DISCORD_CLIENT_ID  | 設定 Discord 群組的 ID  |
+| DISCORD_GUILD_ID | 設定 Discord 群組的 ID  |
 
 ## docker-compose
 
