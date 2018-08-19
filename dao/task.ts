@@ -26,6 +26,12 @@ export default class KnexTaskDao implements ITaskDao {
     return results.map(this.transform);
   }
 
+  async getTask(task: ITask, context?: any) {
+    let results = await this.knex.select()
+      .from('tasks').where('id', '=', task.id) as Array<any>;
+    return this.single(results);
+  }
+
   async createTask(task: ITask, context?: any) {
     delete task.id;
     delete task.createdAt;

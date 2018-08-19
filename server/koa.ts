@@ -169,12 +169,16 @@ export default class YuriKoa {
       });
       ctx.redirect('/');
     });
+
     router.delete('/tasks/:id', this.checkLogin, async (ctx: Koa.Context) => {
-      const task = await this.opt.taskDao.deleteTask({ id: ctx.params.id });
-      if(task.messageId)
-        await this.opt.discordDao.deleteMessage(task.param.channel.id, task.messageId);
+      const task = await this.opt.taskDao.getTask({ id: ctx.params.id });
+      if (task.messageId) {
+        await this.opt.discordDao.deleteMessage(task.param.guild.id, task.param.channel.id, task.messageId);
+      }
+      await this.opt.taskDao.deleteTask({ id: ctx.params.id });
       ctx.body = 'ok';
     });
+
     router.post('/schedule', this.checkLogin, async (ctx: Koa.Context) => {
       if (!ctx.request.body) {
         ctx.throw(400);
@@ -182,7 +186,7 @@ export default class YuriKoa {
       }
       let { interval } = ctx.request.body as any;
       interval = +interval;
-      if (!(interval>0 && interval<=config.server.maxInterval)) {
+      if (interval <= 0 || interval > config.server.maxInterval) {
         ctx.throw(400);
         return;
       }
@@ -191,6 +195,7 @@ export default class YuriKoa {
       await this.opt.scheduler.work();
       ctx.redirect('/');
     });
+
     router.delete('/logout', async (ctx: Koa.Context) => {
       if (ctx.session) {
         ctx.session.id = null;

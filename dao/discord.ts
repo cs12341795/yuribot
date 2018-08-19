@@ -5,12 +5,17 @@ export interface IDiscordDao {
   getGuild(guildId: string): Promise<Guild>;
   listTextChannels(guildId: string): Promise<Array<IChannel>>;
   getTextChannel(guildId: string, channelId: string): Promise<IChannel>;
-  deleteMessage(channelId:string, messageId: string): Promise<IMessage>;
+  deleteMessage(guildId: string, channelId:string, messageId: string): Promise<IMessage>;
 }
 
 export interface IDiscordChannelFactory {
   (guild: Guild, data: any): IChannel
 }
+
+export interface IDiscordMessageFactory {
+  (channel: TextChannel, messageId: string): Promise<IMessage>
+}
+
 export interface IDiscordTask extends ITask {
   param: {
     content: string;
@@ -28,13 +33,19 @@ export interface IDiscordTask extends ITask {
 export default class DiscordDao implements IDiscordDao, ITaskHandler {
   private client: Client;
   private channelFactory: IDiscordChannelFactory;
+  private messageFactory: IDiscordMessageFactory;
 
-  constructor(client: Client, channelFactory?: IDiscordChannelFactory) {
+  constructor(client: Client, channelFactory?: IDiscordChannelFactory, messageFactory?: IDiscordMessageFactory) {
     this.client = client;
     if (channelFactory) {
       this.channelFactory = channelFactory;
     } else {
       this.channelFactory = (guild, data) => new TextChannel(guild, data);
+    }
+    if (messageFactory) {
+      this.messageFactory = messageFactory;
+    } else {
+      this.messageFactory = async (channel, messageId) => await channel.fetchMessage(messageId);
     }
   }
 
@@ -61,12 +72,9 @@ export default class DiscordDao implements IDiscordDao, ITaskHandler {
     throw new Error(`Channel ${channelId} not found`);
   }
 
-  async deleteMessage(channelId: string, messageId: string) {
-    const channel = this.client.channels.get(channelId);
-    if(!(channel instanceof TextChannel))
-      throw new Error(`TextChannel ${channelId} not found`);
-    const message = await (<TextChannel>channel).fetchMessage(messageId);
-    if(!message) throw new Error(`Message ${messageId} in Channel ${channelId} not found`);
+  async deleteMessage(guildId: string, channelId: string, messageId: string) {
+    const channel = await this.getTextChannel(guildId, channelId);
+    const message = await this.messageFactory(channel as TextChannel, messageId);
     return await message.delete();
   }
 
