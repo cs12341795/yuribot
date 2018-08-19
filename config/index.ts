@@ -64,7 +64,7 @@ let config: IConfig = {
       tokenPath: '/api/oauth2/token',
       authorizePath: '/api/oauth2/authorize',
       revokePath: '/api/oauth2/token/revoke',
-      scope: 'identify guilds',
+      scope: 'identify',
       redirectUrl: process.env.DISCORD_OAUTH_REDIRECT || 'http://localhost:4000/discord/callback',
       roles: process.env.DISCORD_ROLES || ''
     }
