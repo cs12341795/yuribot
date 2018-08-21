@@ -81,7 +81,9 @@
           </h5>
           <p class="card-text"><%= renderTaskContent(t) %></p>
           <%- renderTaskStatus(t) %>
-          <span class="badge badge-info">發佈時間 <%= t.publishAt.toLocaleString() %></span>
+          <%if (t.publishAt) { %>
+            <span class="badge badge-info">發佈時間 <%= t.publishAt.toLocaleString() %></span>
+          <% } %>
           <span class="badge badge-primary">更新於 <%= t.updatedAt.toLocaleString() %></span>
           <span class="badge badge-secondary"><%= renderTaskChannel(t) %></span>
         </div>
