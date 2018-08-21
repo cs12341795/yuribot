@@ -53,28 +53,23 @@
       </h1>
       <hr class="my-4">
       <form class="form" method="POST" action="/tasks">
-        <div class="row">
-          <div class="col-md-3 pr-md-0">
-            <div class="form-group mb-2">
-              <select class="custom-select" name="channel_id" required>
-                <option value="">選擇頻道</option>
-                <% for(let c of channels) { %>
-                  <option value="<%= c.id %>"><%= c.name %></option>
-                <% } %>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-8 pr-md-0">
-            <div class="form-group mb-2">
-              <input type="text" name="content" class="form-control" placeholder="想說啥？" required>
-            </div>
-          </div>
-          <div class="col-md-1 pr-md-0">
-            <button type="submit" class="btn btn-primary mb-2">加入</button>
-          </div>
+        <div class="form-group mb-2">
+          <select class="custom-select" name="channel_id" required>
+            <option value="">選擇頻道</option>
+            <% for(let c of channels) { %>
+              <option value="<%= c.id %>"><%= c.name %></option>
+            <% } %>
+          </select>
         </div>
+        <div class="form-group mb-2">
+          <input type="text" name="content" class="form-control" placeholder="想說啥？" required>
+        </div>
+        <div class="form-group mb-2">
+          <input id="publishtime" type="datetime-local" name="publish_at" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">加入排程</button>
       </form>
-      <a href="#/" data-toggle="modal" data-target="#schduleForm">台灣現在時間 <%= new Date().toLocaleString() %> <br>下次發布時間 <%= scheduled.toLocaleString() %></a>
+      <a href="#/" data-toggle="modal" data-target="#schduleForm">台灣現在時間 <%= new Date().toLocaleString() %></a>
     </div>
     <% for(let t of tasks) { %>
       <div class="card w-100 mb-2">
@@ -86,39 +81,13 @@
           </h5>
           <p class="card-text"><%= renderTaskContent(t) %></p>
           <%- renderTaskStatus(t) %>
+          <span class="badge badge-info">發佈時間 <%= t.publishAt.toLocaleString() %></span>
           <span class="badge badge-primary">更新於 <%= t.updatedAt.toLocaleString() %></span>
           <span class="badge badge-secondary"><%= renderTaskChannel(t) %></span>
         </div>
       </div>
     <% } %>
   </div>
-
-  <div class="modal fade" id="schduleForm" tabindex="-1" role="dialog" aria-labelledby="schduleFormLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="schduleFormLabel">調整發布週期</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form method="POST" action="/schedule">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text">每</span>
-            </div>
-            <input type="number" name="interval" class="form-control" value="60" min="1" max="<%= config.maxInterval %>" step="1">
-            <div class="input-group-append">
-              <span class="input-group-text">分鐘</span>
-            </div>
-          </div>
-          <button class="btn btn-warning" type="submit">套用，並立即發布</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->

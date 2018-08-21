@@ -3,6 +3,7 @@ import * as bodyParser from 'koa-bodyparser';
 import * as Router from 'koa-router';
 import * as session from 'koa-session';
 import * as Oauth2 from 'simple-oauth2';
+import * as moment from 'moment-timezone';
 import * as ejs from 'ejs';
 import axios from 'axios';
 import { Server } from 'http';
@@ -139,7 +140,14 @@ export default class YuriKoa {
         return;
       }
 
-      let { content, channel_id } = ctx.request.body as any;
+      let { content, channel_id, publish_at } = ctx.request.body as any;
+
+      const publishAt = moment.tz(publish_at, 'Asia/Taipei');
+      if (!publishAt.isValid()) {
+        ctx.throw(400);
+        return;
+      }
+
       let guild = await this.opt.discordDao.getGuild(config.discord.auth.guildId);
       let channel = await this.opt.discordDao.getTextChannel(config.discord.auth.guildId, channel_id);
 
@@ -165,7 +173,8 @@ export default class YuriKoa {
           content: content,
           channel: { id: channel.id, name: channel.name },
           guild: { id: guild.id, name: guild.name }
-        }
+        },
+        publishAt: publishAt.toDate()
       });
       ctx.redirect('/');
     });
@@ -177,23 +186,6 @@ export default class YuriKoa {
       }
       await this.opt.taskDao.deleteTask({ id: ctx.params.id });
       ctx.body = 'ok';
-    });
-
-    router.post('/schedule', this.checkLogin, async (ctx: Koa.Context) => {
-      if (!ctx.request.body) {
-        ctx.throw(400);
-        return;
-      }
-      let { interval } = ctx.request.body as any;
-      interval = +interval;
-      if (interval <= 0 || interval > config.server.maxInterval) {
-        ctx.throw(400);
-        return;
-      }
-      this.opt.scheduler.setInterval(interval * 60 * 1000);
-      this.opt.scheduler.start();
-      await this.opt.scheduler.work();
-      ctx.redirect('/');
     });
 
     router.delete('/logout', async (ctx: Koa.Context) => {

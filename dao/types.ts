@@ -14,6 +14,7 @@ export interface ITask {
   response?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  publishAt?: Date;
   messageId?: string;
 }
 

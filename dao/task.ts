@@ -20,8 +20,9 @@ export default class KnexTaskDao implements ITaskDao {
     let results = await this.knex.select()
       .from('tasks')
       .where('status', '<', TaskStatus.DONE)
+      .where('publish_at', '<', new Date)
       .orderBy('status')
-      .orderBy('created_at') as Array<any>;
+      .orderBy('publish_at') as Array<any>;
 
     return results.map(this.transform);
   }
@@ -52,13 +53,13 @@ export default class KnexTaskDao implements ITaskDao {
   }
 
   private transform(r: any): ITask {
-    const { id, author, status, platform, param, response, created_at: createdAt, updated_at:updatedAt, message_id:messageId } = r;
-    return { id, author, status, platform, param, response, createdAt, updatedAt, messageId };
+    const { id, author, status, platform, param, response, created_at: createdAt, updated_at:updatedAt, publish_at: publishAt, message_id:messageId } = r;
+    return { id, author, status, platform, param, response, createdAt, updatedAt, publishAt, messageId };
   }
 
   private format(t: ITask): any {
-    const { id, author, status, platform, param, response, createdAt:created_at, updatedAt:updated_at, messageId:message_id } = t;
-    return { id, author, status, platform, param, response, created_at, updated_at, message_id };
+    const { id, author, status, platform, param, response, createdAt: created_at, updatedAt: updated_at, publishAt: publish_at, messageId:message_id } = t;
+    return { id, author, status, platform, param, response, created_at, updated_at, publish_at, message_id };
   }
 
   private single(r: Array<any>): ITask {

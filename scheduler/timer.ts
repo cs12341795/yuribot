@@ -6,7 +6,7 @@ export default class TimerScheduler implements IScheduler {
   private taskDao: ITaskDao;
   private taskHandler: ITaskHandler;
   private scheduled: Date;
-  private interval: number = 3600 * 1000;
+  private interval: number = 10 * 1000;
   private timer: any;
   private lock: boolean;
 

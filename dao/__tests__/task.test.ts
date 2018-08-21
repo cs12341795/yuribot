@@ -5,15 +5,23 @@ import { TaskStatus } from '../types';
 const fixtures = [{
   id: undefined,
   status: TaskStatus.PENDING,
-  platform: '1'
+  platform: '1',
+  publish_at: '2018-08-20 00:00:00'
 }, {
   id: undefined,
   status: TaskStatus.DONE,
-  platform: '2'
+  platform: '2',
+  publish_at: '2018-08-20 00:00:00'
 }, {
   id: undefined,
   status: TaskStatus.ERROR,
-  platform: '3'
+  platform: '3',
+  publish_at: '2018-08-20 00:00:00'
+}, {
+  id: undefined,
+  status: TaskStatus.PENDING,
+  platform: '4',
+  publish_at: '2999-08-20 00:00:00'
 }];
 
 const dao = new KnexTaskDao(knex);
@@ -31,10 +39,11 @@ describe('KnexTaskDao', () => {
 
   test('getAllTasks', async () => {
     let results = await dao.getAllTasks();
-    expect(results.length).toBe(3);
-    if (results.length === 3) {
+    expect(results.length).toBe(4);
+    if (results.length === 4) {
       expect(results[0].createdAt >= results[1].createdAt)
       expect(results[1].createdAt >= results[2].createdAt)
+      expect(results[2].createdAt >= results[3].createdAt)
     }
   });
 
@@ -42,7 +51,7 @@ describe('KnexTaskDao', () => {
     let results = await dao.getUndoTasks();
     expect(results.length).toBe(2);
     if (results.length === 2) {
-      expect(results[0].createdAt <= results[1].createdAt)
+      expect(results[0].publishAt <= results[1].publishAt)
     }
   });
 
