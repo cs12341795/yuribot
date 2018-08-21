@@ -105,7 +105,8 @@
         e.preventDefault();
         let $a = $(e.target);
         fetch($a.attr('href'), {
-          method: $a.data('remote')
+          method: $a.data('remote'),
+          credentials: 'same-origin'
         }).then(res => {
           window.location.reload();
         }).catch(err => {
