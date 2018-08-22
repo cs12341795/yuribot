@@ -65,7 +65,7 @@
           <input type="text" name="content" class="form-control" placeholder="想說啥？" required>
         </div>
         <div class="form-group mb-2">
-          <input id="publishtime" type="datetime-local" name="publish_at" class="form-control" required>
+          <input id="publishtime" type="datetime-local" name="publish_at" min="2018-01-01T00:01" max="2100-01-01T00:01" value="<%= moment().format('YYYY-MM-DDTHH:mm') %>" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary mb-2">加入排程</button>
       </form>

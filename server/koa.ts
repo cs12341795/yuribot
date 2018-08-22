@@ -127,7 +127,7 @@ export default class YuriKoa {
         channels = channels.filter(c => c.name === '發佈機debug專用');
       }
 
-      await this.render(ctx, 'index', { tasks, scheduled, channels, members, session: ctx.session, config: {maxInterval: config.server.maxInterval} });
+      await this.render(ctx, 'index', { tasks, scheduled, channels, members, session: ctx.session, config: {maxInterval: config.server.maxInterval}, moment: moment });
     });
 
     router.post('/tasks', this.checkLogin, async (ctx: Koa.Context) => {
@@ -141,9 +141,10 @@ export default class YuriKoa {
       }
 
       let { content, channel_id, publish_at } = ctx.request.body as any;
-
       const publishAt = moment.tz(publish_at, 'Asia/Taipei');
-      if (!publishAt.isValid()) {
+      const min = moment.tz('2018-01-01T00:00:00', 'Asia/Taipei');
+      const max = moment.tz('2100-01-01T00:00:00', 'Asia/Taipei');
+      if (!publishAt.isValid() || !publishAt.isBetween(min, max)) {
         ctx.throw(400);
         return;
       }
