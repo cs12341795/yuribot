@@ -143,7 +143,7 @@ export default class YuriKoa {
       let { content, channel_id, publish_at } = ctx.request.body as any;
 
       const publishAt = moment.tz(publish_at, 'Asia/Taipei');
-      if (!publishAt.isValid()) {
+      if (!publishAt.isValid() || publishAt.isBefore()) {
         ctx.throw(400);
         return;
       }
